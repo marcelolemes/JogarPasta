@@ -46,6 +46,7 @@ namespace DropFiles1
 
         private FolderBrowserDialog camCurso;
         private IContainer components;
+        private CheckBox checkBox1;
         String[] DiretorioCur = new string[] { };
 
         #region Constructor, Destructor
@@ -96,6 +97,7 @@ namespace DropFiles1
             this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
             this.lstFiles = new System.Windows.Forms.ListBox();
             this.camCurso = new System.Windows.Forms.FolderBrowserDialog();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -145,7 +147,7 @@ namespace DropFiles1
             this.lstFiles.ItemHeight = 16;
             this.lstFiles.Location = new System.Drawing.Point(7, 17);
             this.lstFiles.Name = "lstFiles";
-            this.lstFiles.Size = new System.Drawing.Size(468, 132);
+            this.lstFiles.Size = new System.Drawing.Size(478, 132);
             this.lstFiles.TabIndex = 0;
             this.lstFiles.SelectedIndexChanged += new System.EventHandler(this.lstFiles_SelectedIndexChanged);
             // 
@@ -155,11 +157,25 @@ namespace DropFiles1
             this.camCurso.ShowNewFolderButton = false;
             this.camCurso.HelpRequest += new System.EventHandler(this.camCurso_HelpRequest);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(12, 155);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(136, 20);
+            this.checkBox1.TabIndex = 1;
+            this.checkBox1.Text = "Diferenciar H de V";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
+            // 
             // Form1
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(481, 163);
+            this.ClientSize = new System.Drawing.Size(491, 190);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.lstFiles);
             this.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -173,6 +189,7 @@ namespace DropFiles1
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 		#endregion
@@ -214,6 +231,7 @@ namespace DropFiles1
             string sFile;
             string valorAlbumAtual="";
             string valorFoto="";
+            string valorFotoNome = "";
             int contPastasMontagem;
             List<string> arquivosPesquisa = new List<string>();
             List<string> valorPath = new List<string>();
@@ -239,16 +257,21 @@ namespace DropFiles1
 
                         
             contPastasMontagem = Directory.GetDirectories(targetPath + valorAlbumAtual, "T *").Length;
+            contPastasMontagem++;
+          //  MessageBox.Show(""+contPastasMontagem);
 
             targetPath = "";
+            valorPath.Clear();
 
             // process all files in array
             for ( int i = 0; i < a.Length; i++ )
             {
-                valorPath.Clear();
+                String HV="";
+              
 
                     sFile = a.GetValue(i).ToString();           // file name
 
+             
                     // Check file name
                     // (Let's say we don't accept non-existing files or directories)
                     FileInfo info = new FileInfo(sFile);
@@ -260,6 +283,10 @@ namespace DropFiles1
                     }
                     else
                     {
+
+                     
+
+
                         valorAlbumAtual = a.GetValue(i).ToString();           // file name
                         valorPath.AddRange(valorAlbumAtual.Split('\\'));
 
@@ -267,6 +294,8 @@ namespace DropFiles1
                         valorPath.Remove(valorFoto);
                         valorAlbumAtual = valorPath[valorPath.Count - 1];
                         valorPath.Remove(valorAlbumAtual);
+                        valorFotoNome = valorFoto.Substring(0,valorFoto.Length-4);
+                        
 
                         lstFiles.Items.Add(valorFoto + " movido");
                         foreach (String s in valorPath)
@@ -277,7 +306,7 @@ namespace DropFiles1
                    
                         targetPath = targetPath + valorAlbumAtual + "\\T "+contPastasMontagem+"\\";
                         
-                        lstFiles.Items.Add("Movido em " + targetPath + valorFoto);
+                        lstFiles.Items.Add("Movido em " + targetPath+valorFoto);
 
                         try
                         {
@@ -295,13 +324,31 @@ namespace DropFiles1
                                 }
                             }
 
-                            if (!File.Exists(targetPath + valorFoto))
-                            {
-                                System.IO.File.Move(sFile, targetPath + valorFoto);
-                            }
-                            else {
-                                MessageBox.Show("O arquivo já existe");
-                            }
+                          
+                                if (checkBox1.Checked)
+                                {
+
+                                    Image imagem = Image.FromFile(a.GetValue(i).ToString());
+
+                                    if (imagem.Width > imagem.Height)
+                                    {
+                                        HV = "H";
+                                    }
+                                    else if (imagem.Height > imagem.Width)
+                                    {
+                                        HV = "V";
+                                    }
+
+                                    imagem.Dispose();
+
+                                }
+
+
+                                System.IO.File.Move(sFile, targetPath + valorFotoNome + HV+".jpg");
+                            
+                            
+                                
+                            
                         }
                         catch
                         {
@@ -426,6 +473,11 @@ namespace DropFiles1
       
 
         private void camCurso_HelpRequest(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
 
         }
