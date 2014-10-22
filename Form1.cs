@@ -46,6 +46,7 @@ namespace DropFiles1
 
         private FolderBrowserDialog camCurso;
         private IContainer components;
+        private Label label1;
         String[] DiretorioCur = new string[] { };
 
         #region Constructor, Destructor
@@ -96,6 +97,7 @@ namespace DropFiles1
             this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
             this.lstFiles = new System.Windows.Forms.ListBox();
             this.camCurso = new System.Windows.Forms.FolderBrowserDialog();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -145,7 +147,7 @@ namespace DropFiles1
             this.lstFiles.ItemHeight = 16;
             this.lstFiles.Location = new System.Drawing.Point(7, 17);
             this.lstFiles.Name = "lstFiles";
-            this.lstFiles.Size = new System.Drawing.Size(468, 132);
+            this.lstFiles.Size = new System.Drawing.Size(468, 116);
             this.lstFiles.TabIndex = 0;
             this.lstFiles.SelectedIndexChanged += new System.EventHandler(this.lstFiles_SelectedIndexChanged);
             // 
@@ -155,11 +157,22 @@ namespace DropFiles1
             this.camCurso.ShowNewFolderButton = false;
             this.camCurso.HelpRequest += new System.EventHandler(this.camCurso_HelpRequest);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(323, 155);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(155, 16);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "lemmarcelo@gmail.com";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(481, 163);
+            this.ClientSize = new System.Drawing.Size(481, 174);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lstFiles);
             this.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -169,10 +182,11 @@ namespace DropFiles1
             this.MaximizeBox = false;
             this.Menu = this.mainMenu1;
             this.Name = "Form1";
-            this.Text = "Pasta Montagem (teste)";
+            this.Text = "Pasta Mover";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 		#endregion
@@ -211,12 +225,13 @@ namespace DropFiles1
             // their names in list box.
             
             string sError = "";
-            string sFile;
+            string sFolder;
             string valorAlbumAtual="";
-            string valorFoto="";
-            int contPastasMontagem;
+            string valorPasta="";
+            
             List<string> arquivosPesquisa = new List<string>();
             List<string> valorPath = new List<string>();
+            List<string> valorSubPath = new List<string>();
             string targetPath="";
             lstFiles.Items.Clear();
 
@@ -226,8 +241,8 @@ namespace DropFiles1
             valorAlbumAtual = a.GetValue(0).ToString();           // file name
             valorPath.AddRange(valorAlbumAtual.Split('\\'));
 
-            valorFoto = valorPath[valorPath.Count - 1];
-            valorPath.Remove(valorFoto);
+            valorPasta = valorPath[valorPath.Count - 1];
+            valorPath.Remove(valorPasta);
             valorAlbumAtual = valorPath[valorPath.Count - 1];
             valorPath.Remove(valorAlbumAtual);
 
@@ -238,75 +253,110 @@ namespace DropFiles1
             }
 
                         
-            contPastasMontagem = Directory.GetDirectories(targetPath + valorAlbumAtual, "T *").Length;
+         
+          //  MessageBox.Show(""+contPastasMontagem);
 
             targetPath = "";
+            valorPath.Clear();
 
             // process all files in array
             for ( int i = 0; i < a.Length; i++ )
             {
-                valorPath.Clear();
+                
+              
 
-                    sFile = a.GetValue(i).ToString();           // file name
+                    sFolder = a.GetValue(i).ToString();           // file name
 
+             
                     // Check file name
                     // (Let's say we don't accept non-existing files or directories)
-                    FileInfo info = new FileInfo(sFile);
+                  //  FileInfo info = new FileInfo(sFile);
 
 
-                    if (!info.Exists)
                     {
-                        sError += "\nNome do arquivo incorreto " + sFile + " impossível abrí-lo";
-                    }
-                    else
-                    {
+
+                     
+
+
                         valorAlbumAtual = a.GetValue(i).ToString();           // file name
                         valorPath.AddRange(valorAlbumAtual.Split('\\'));
 
-                        valorFoto = valorPath[valorPath.Count - 1];
-                        valorPath.Remove(valorFoto);
+                        valorPasta = valorPath[valorPath.Count - 1];
+                        valorPath.Remove(valorPasta);
                         valorAlbumAtual = valorPath[valorPath.Count - 1];
                         valorPath.Remove(valorAlbumAtual);
+                        //valorFotoNome = valorFoto.Substring(0,valorFoto.Length-4);
+                        
 
-                        lstFiles.Items.Add(valorFoto + " movido");
+                        lstFiles.Items.Add(valorPasta + " movido");
                         foreach (String s in valorPath)
                         {
                             targetPath = targetPath + s + "\\";
                         }
                       
                    
-                        targetPath = targetPath + valorAlbumAtual + "\\T "+contPastasMontagem+"\\";
+                        targetPath = targetPath +valorPasta + "\\"+ valorAlbumAtual;
                         
-                        lstFiles.Items.Add("Movido em " + targetPath + valorFoto);
+                        lstFiles.Items.Add("Movido em " + targetPath+valorPasta);
 
                         try
                         {
-                            if (!File.Exists(targetPath))
+                            if (!Directory.Exists(targetPath))
+                            {
+                                try
+                                {
+                                    Directory.CreateDirectory(targetPath);
+                                }
+                                catch
+                                {
+                                }
+                            }
+
+                            if (Directory.Exists(targetPath))
                             {
                                 // This statement ensures that the file is created,
                                 // but the handle is not kept.
                                 try
                                 {
-                                    System.IO.Directory.CreateDirectory(targetPath);
+                                    
+
+                                    arquivosPesquisa.AddRange(Directory.GetFiles(sFolder));
+
+                                    foreach(String s in arquivosPesquisa){
+                                        valorSubPath.AddRange(s.Split('\\'));
+                                        string aux = valorSubPath[valorSubPath.Count - 1];
+
+                                        try
+                                        {
+                                            File.Move(s,targetPath+"\\"+aux);
+                                        }
+                                        catch { 
+
+                                        }
+                                     
+                                    }
+                                    try
+                                    {
+                                        Directory.Delete(sFolder);
+                                    }
+                                    catch
+                                    { 
+                                    }
                                 }
                                 catch
                                 {
-                                    MessageBox.Show("Falha ao criar pasta removidas");
+                                    // MessageBox.Show("Falha ao criar pasta removidas");
                                 }
                             }
 
-                            if (!File.Exists(targetPath + valorFoto))
-                            {
-                                System.IO.File.Move(sFile, targetPath + valorFoto);
-                            }
-                            else {
-                                MessageBox.Show("O arquivo já existe");
-                            }
+
+
+                            
                         }
                         catch
                         {
 
-                            MessageBox.Show("Falha ao mover arquivo");
+                            MessageBox.Show("Falha ao Pasta arquivo");
                         }
                         finally
                         {
@@ -316,7 +366,7 @@ namespace DropFiles1
 
                             valorPath.Clear();
                             valorAlbumAtual = "";
-                            valorFoto = "";
+                            valorPasta = "";
                             targetPath = "";
 
                         }
@@ -368,9 +418,8 @@ namespace DropFiles1
         {
             MessageBox.Show(
                 this,
-                "Programa feito para Copiar fotos\n" + 
-                "Class DragDropManager is used to implement Drag-Drop feature",
-                "Fase de testes!!!");
+                "Programa feito para Mover pastas\n" + 
+                "Software sob a Gnu Public License");
         
         }
 
@@ -426,6 +475,16 @@ namespace DropFiles1
       
 
         private void camCurso_HelpRequest(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }

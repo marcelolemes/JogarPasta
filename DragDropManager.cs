@@ -114,7 +114,7 @@ namespace DropFiles1
                 // When file(s) are dragged from Explorer to the form, IDataObject
                 // contains array of file names. If one file is dragged,
                 // array contains one element.
-                Array a = (Array)e.Data.GetData(DataFormats.FileDrop);
+                Array a = (Array)e.Data.GetData(DataFormats.FileDrop,false);
 
                 if ( a != null )
                 {

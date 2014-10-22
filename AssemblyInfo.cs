@@ -6,11 +6,11 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Remover")]
-[assembly: AssemblyDescription("Remover fotos")]
+[assembly: AssemblyTitle("Remover pastas")]
+[assembly: AssemblyDescription("Remover pastas")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("MegaPiche")]
-[assembly: AssemblyProduct("Remover")]
+[assembly: AssemblyCompany("MegaPixel")]
+[assembly: AssemblyProduct("Remover Pastas")]
 [assembly: AssemblyCopyright("Marcelo Lemes")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		

@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta Montagem", "Pasta Montagem.csproj", "{7F538951-DDF7-497F-A287-40674D4EEC6F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta Mover", "Pasta Mover.csproj", "{7F538951-DDF7-497F-A287-40674D4EEC6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
